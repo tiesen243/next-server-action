@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next'
-import { env } from 'process'
+
+import { env } from '@/env'
 
 export type SiteConfig = {
   meta: Metadata
