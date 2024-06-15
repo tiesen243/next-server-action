@@ -27,7 +27,7 @@ export const Form: React.FC = () => {
     })
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="mb-4 space-y-4">
       <FormField name="name" type="text" label="Name" error={error.name} />
       <FormField name="email" type="email" label="Email" error={error.email} />
       <FormField name="password" type="password" label="Password" error={error.password} />

@@ -9,7 +9,7 @@ import { auth } from '@/server/auth'
 export const getPosts = cache(
   async () => {
     const posts = await db.post.findMany({
-      include: { author: { select: { name: true } } },
+      include: { author: { select: { id: true, name: true } } },
       orderBy: { createdAt: 'desc' },
     })
     return posts
