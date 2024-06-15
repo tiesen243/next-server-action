@@ -19,7 +19,7 @@ export const FormField: React.FC<FormFieldProps> = ({
       <Label>{label}</Label>
       <Comp {...props} />
 
-      {error && <p className="text-sm text-destructive">{error.join(', ')}</p>}
+      {error && <span className="text-sm text-destructive">{error.join(', ')}</span>}
     </div>
   )
 }
