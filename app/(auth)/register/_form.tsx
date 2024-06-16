@@ -1,7 +1,7 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import { useState, useTransition } from 'react'
+import { useActionState } from 'react'
 import { toast } from 'sonner'
 
 import { FormField } from '@/components/form-field'
@@ -10,33 +10,22 @@ import { actions } from '@/server/actions'
 
 export const Form: React.FC = () => {
   const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<Record<string, string[] | undefined>>({})
 
-  const action = (formData: FormData) =>
-    startTransition(async () => {
-      const res = await actions.auth.mutation.register(formData)
-      if (res?.fieldErrors) setError(res.fieldErrors)
-      else setError({})
-
-      if (res?.error) toast.error(res.error)
-      if (res?.message) {
-        toast.success(res.message)
-        router.push('/login')
-      }
-    })
+  const [error, action, isPending] = useActionState(async (_: unknown, fd: FormData) => {
+    const res = await actions.auth.mutation.register(fd)
+    if (res?.fieldErrors) return res.fieldErrors
+    if (res?.error) toast.error(res.error)
+    if (res?.message) {
+      toast.success(res.message)
+      router.push('/login')
+    }
+  }, null)
 
   return (
     <form action={action} className="mb-4 space-y-4">
-      <FormField name="name" type="text" label="Name" error={error.name} />
-      <FormField name="email" type="email" label="Email" error={error.email} />
-      <FormField name="password" type="password" label="Password" error={error.password} />
-      <FormField
-        name="confirmPassword"
-        type="password"
-        label="Confirm Password"
-        error={error.confirmPassword}
-      />
+      {fields.map((field) => (
+        <FormField key={field.name} {...field} error={error?.[field.name]} />
+      ))}
 
       <Button className="w-full" isLoading={isPending}>
         Register
@@ -44,3 +33,10 @@ export const Form: React.FC = () => {
     </form>
   )
 }
+
+const fields = [
+  { name: 'name', type: 'text', label: 'Name' },
+  { name: 'email', type: 'email', label: 'Email' },
+  { name: 'password', type: 'password', label: 'Password' },
+  { name: 'confirmPassword', type: 'password', label: 'Confirm Password' },
+]

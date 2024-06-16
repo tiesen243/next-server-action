@@ -1,7 +1,7 @@
 'use client'
 
-import type { User, Session } from '@prisma/client'
-import { createContext, useContext, useEffect, useState } from 'react'
+import type { Session, User } from '@prisma/client'
+import { createContext, use, useEffect, useState } from 'react'
 
 type Auth =
   | { isAuthed: true; user: User; session: Session; mutate: () => Promise<void> }
@@ -17,7 +17,7 @@ const initialState: Auth = {
 const authContext = createContext<Auth>(initialState)
 
 export const useAuth = () => {
-  const context = useContext(authContext)
+  const context = use(authContext)
 
   if (!context) throw new Error('useAuth must be used within an AuthProvider')
 

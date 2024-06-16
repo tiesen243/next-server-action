@@ -27,6 +27,7 @@ export const createPost = async (formData: FormData) => {
 
   try {
     if (!user) throw new Error('You must be logged in to create a post')
+
     const { title, content } = schema.parse(Object.fromEntries(formData))
 
     const post = await db.post.create({
@@ -35,10 +36,10 @@ export const createPost = async (formData: FormData) => {
     if (!post) throw new Error('Failed to create post')
 
     revalidateTag('posts')
-    return { success: true }
+    return { message: 'Post created successfully' }
   } catch (e) {
-    if (e instanceof z.ZodError) return { fieldErrors: e.flatten().fieldErrors, success: false }
-    else if (e instanceof Error) return { error: e.message, success: false }
+    if (e instanceof z.ZodError) return { fieldErrors: e.flatten().fieldErrors }
+    else if (e instanceof Error) return { error: e.message }
   }
 }
 

@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useTransition } from 'react'
+import { useActionState } from 'react'
 import { toast } from 'sonner'
 
 import { FormField } from '@/components/form-field'
@@ -11,20 +11,13 @@ import { actions } from '@/server/actions'
 
 export const CreatePost: React.FC = () => {
   const { isAuthed } = useAuth()
-  const [error, setError] = useState<Record<string, string[] | undefined>>({})
-  const [isPending, startTransition] = useTransition()
 
-  const action = (e: React.FormEvent<HTMLFormElement>) =>
-    startTransition(async () => {
-      e.preventDefault()
-      const form = e.currentTarget
-      const res = await actions.post.mutation.createPost(new FormData(form))
-      if (res?.fieldErrors) setError(res.fieldErrors)
-      else setError({})
-
-      if (res?.error) toast(res.error)
-      if (res?.success) form.reset()
-    })
+  const [error, action, isPending] = useActionState(async (_: unknown, fd: FormData) => {
+    const res = await actions.post.mutation.createPost(fd)
+    if (res?.fieldErrors) return res.fieldErrors
+    if (res?.error) toast.error(res.error)
+    if (res?.message) toast.success(res.message)
+  }, null)
 
   if (!isAuthed)
     return (
@@ -34,9 +27,9 @@ export const CreatePost: React.FC = () => {
     )
 
   return (
-    <form onSubmit={action} className="mb-4 space-y-4">
-      <FormField label="Title" name="title" error={error.title} />
-      <FormField label="Content" name="content" error={error.content} asChild>
+    <form action={action} className="mb-4 space-y-4">
+      <FormField label="Title" name="title" error={error?.title} />
+      <FormField label="Content" name="content" error={error?.content} asChild>
         <Textarea />
       </FormField>
 
