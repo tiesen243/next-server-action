@@ -1,23 +1,33 @@
+'use client'
+
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
-import { logout } from '@/server/actions/auth'
-import { auth } from '@/server/auth'
+import { useAuth } from '@/lib/auth'
+import { actions } from '@/server/actions'
 
-export const Header: React.FC = async () => {
-  const { user } = await auth()
+export const Header: React.FC = () => {
+  const router = useRouter()
+  const { isAuthed, user, mutate } = useAuth()
+
+  const action = async () => {
+    await actions.auth.mutation.logout()
+    router.push('/')
+    mutate()
+  }
   return (
     <header className="sticky inset-0 z-50 border-b bg-background/70 py-2 backdrop-blur-xl backdrop-saturate-150">
       <div className="container flex items-center justify-between gap-4">
-        <Link href="/">
-          <Image src="/logo.svg" width={32} height={32} alt="logo" className="h-auto dark:invert" />
+        <Link href="/" className="h-8 w-8">
+          <Image src="/logo.svg" alt="logo" className="dark:invert" fill />
         </Link>
 
         <div className="flex items-center gap-2">
-          {user ? (
-            <form action={logout} className="flex items-center gap-2">
+          {isAuthed ? (
+            <form action={action} className="flex items-center gap-2">
               <p>{user.name}</p> |
               <Button variant="ghost" size="sm">
                 Logout

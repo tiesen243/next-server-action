@@ -1,9 +1,11 @@
 'use server'
-import { db } from '@/prisma'
+
 import { Scrypt } from 'lucia'
-import { z } from 'zod'
-import { lucia } from '../auth/lucia'
 import { cookies } from 'next/headers'
+import { z } from 'zod'
+
+import { db } from '@/prisma'
+import { lucia } from '@/server/auth/lucia'
 
 export const register = async (fd: FormData) => {
   const schema = z

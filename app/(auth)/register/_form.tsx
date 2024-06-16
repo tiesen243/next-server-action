@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 
 import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
-import { register } from '@/server/actions/auth'
+import { actions } from '@/server/actions'
 
 export const Form: React.FC = () => {
   const router = useRouter()
@@ -15,7 +15,7 @@ export const Form: React.FC = () => {
 
   const action = (formData: FormData) =>
     startTransition(async () => {
-      const res = await register(formData)
+      const res = await actions.auth.mutation.register(formData)
       if (res?.fieldErrors) setError(res.fieldErrors)
       else setError({})
 

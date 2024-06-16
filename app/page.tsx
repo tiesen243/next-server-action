@@ -3,23 +3,14 @@ import Link from 'next/link'
 
 import { CreatePost } from '@/components/create-post'
 import { DeletePost } from '@/components/delete-post'
-import { getPosts } from '@/server/actions/post'
-import { auth } from '@/server/auth'
+import { actions } from '@/server/actions'
 
 const Page: NextPage = async () => {
-  const { user } = await auth()
-  const posts = await getPosts()
+  const posts = await actions.post.query.getPosts()
 
   return (
     <>
-      {user ? (
-        <CreatePost />
-      ) : (
-        <p className="mb-4 text-center text-muted-foreground">
-          You must be logged in to create a post
-        </p>
-      )}
-
+      <CreatePost />
       <p className="mb-4 text-center">
         Protected page. You must be logged in to see this page. You can log in by{' '}
         <Link href="/protected" className="underline-offset-4 hover:underline">

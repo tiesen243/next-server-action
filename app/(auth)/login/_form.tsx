@@ -6,16 +6,18 @@ import { toast } from 'sonner'
 
 import { FormField } from '@/components/form-field'
 import { Button } from '@/components/ui/button'
-import { login } from '@/server/actions/auth'
+import { actions } from '@/server/actions'
+import { useAuth } from '@/lib/auth'
 
 export const Form: React.FC = () => {
   const router = useRouter()
+  const { mutate } = useAuth()
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<Record<string, string[] | undefined>>({})
 
   const action = (formData: FormData) =>
     startTransition(async () => {
-      const res = await login(formData)
+      const res = await actions.auth.mutation.login(formData)
       if (res?.fieldErrors) setError(res.fieldErrors)
       else setError({})
 
@@ -23,7 +25,7 @@ export const Form: React.FC = () => {
       if (res?.message) {
         toast.success(res.message)
         router.push('/')
-        router.refresh()
+        mutate()
       }
     })
 
