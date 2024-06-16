@@ -1,4 +1,5 @@
 import type { NextPage } from 'next'
+import Link from 'next/link'
 
 import { CreatePost } from '@/components/create-post'
 import { DeletePost } from '@/components/delete-post'
@@ -19,6 +20,13 @@ const Page: NextPage = async () => {
         </p>
       )}
 
+      <p className="mb-4 text-center">
+        Protected page. You must be logged in to see this page. You can log in by{' '}
+        <Link href="/protected" className="underline-offset-4 hover:underline">
+          visiting
+        </Link>
+      </p>
+
       <ul className="grid grid-cols-1 gap-4 md:grid-cols-3">
         {posts.map((post) => (
           <li key={post.id} className="space-y-4 rounded-md border p-6 shadow-lg">
@@ -29,7 +37,7 @@ const Page: NextPage = async () => {
 
             <p className="line-clamp-1 break-all">{post.content}</p>
 
-            {user?.id === post.author.id && <DeletePost id={post.id} />}
+            <DeletePost id={post.id} />
           </li>
         ))}
       </ul>
