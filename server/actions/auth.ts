@@ -6,6 +6,7 @@ import { z } from 'zod'
 
 import { db } from '@/prisma'
 import { lucia } from '@/server/auth/lucia'
+import { auth } from '../auth'
 
 export const register = async (fd: FormData) => {
   const schema = z
@@ -65,6 +66,11 @@ export const login = async (fd: FormData) => {
 }
 
 export const logout = async () => {
+  const { session } = await auth()
+  if (!session) return { error: 'User is not logged in' }
+
+  await lucia.invalidateSession(session.id)
+
   const sessionCookie = lucia.createBlankSessionCookie()
   cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
 }
