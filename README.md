@@ -5,6 +5,7 @@ This is a template for creating a server action in Next.js. It is a simple examp
 ## How do I use this?
 
 1. Clone this repository.
+
 ```bash
 # npm
 npx create next-app --example https://github.com/tiesen243/next-server-action
@@ -20,6 +21,7 @@ bun create next-app --example https://github.com/tiesen243/next-server-action
 ```
 
 2. Install the dependencies.
+
 ```bash
 # npm
 npm install
@@ -35,7 +37,7 @@ bun install
 ```
 
 3. Create a `.env` file in the root of the project and add the following content.
-> Note: You can run `postgresql` by run the following command 
+   > Note: You can run `postgresql` by run the following command
 
 ```bash
 docker run --name postgresql -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:alpine
@@ -47,18 +49,19 @@ DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
 ```
 
 4. Run the development server.
+
 ```bash
 # npm
-npm run dev 
-    
+npm run dev
+
 # yarn
-yarn dev 
+yarn dev
 
-# pnpm 
-pnpm dev 
+# pnpm
+pnpm dev
 
-# bun 
-bun dev 
+# bun
+bun dev
 ```
 
 ## How do I deploy this?
