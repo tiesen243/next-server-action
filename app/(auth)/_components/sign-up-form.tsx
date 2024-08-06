@@ -15,13 +15,13 @@ export const SignUpForm: React.FC = () => {
   const form = useForm<FormValues>({ resolver })
 
   const handleSubmit = form.handleSubmit(async ({ confirmPassword: _, ...values }) => {
-    toast.promise(signUp(values), {
-      loading: 'Signing up...',
-      success: 'Signed up successfully',
-      error: 'Failed to sign up',
-      description: (data) => data instanceof Error && data.message,
-    })
-    router.push('/sign-in')
+    try {
+      const res = await signUp(values)
+      toast.success(res.message)
+      router.push('/sign-in')
+    } catch (e) {
+      if (e instanceof Error) toast.error(e.message)
+    }
   })
 
   const { errors, isSubmitting } = form.formState
