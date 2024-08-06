@@ -1,28 +1,65 @@
-# Create T3 App
+# Server Action in Next.js
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This is a template for creating a server action in Next.js. It is a simple example of how to create a server action in Next.js.
 
-## What's next? How do I make an app with this?
+## How do I use this?
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+1. Clone this repository.
+```bash
+# npm
+npx create next-app --example https://github.com/tiesen243/next-server-action
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+# yarn
+yarn create next-app --example https://github.com/tiesen243/next-server-action
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Drizzle](https://orm.drizzle.team)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+# pnpm
+pnpx create next-app --example https://github.com/tiesen243/next-server-action
 
-## Learn More
+# bun
+bun create next-app --example https://github.com/tiesen243/next-server-action
+```
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+2. Install the dependencies.
+```bash
+# npm
+npm install
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+# yarn
+yarn
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+# pnpm
+pnpm install
+
+# bun
+bun install
+```
+
+3. Create a `.env` file in the root of the project and add the following content.
+> Note: You can run `postgresql` by run the following command 
+
+```bash
+docker run --name postgresql -e POSTGRES_PASSWORD=postgres -p 5432:5432 -d postgres:alpine
+```
+
+```bash
+# .env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/postgres
+```
+
+4. Run the development server.
+```bash
+# npm
+npm run dev 
+    
+# yarn
+yarn dev 
+
+# pnpm 
+pnpm dev 
+
+# bun 
+bun dev 
+```
 
 ## How do I deploy this?
 

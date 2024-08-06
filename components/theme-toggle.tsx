@@ -7,15 +7,16 @@ import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 
 export const ThemeToggle: React.FC = () => {
-  const { theme, setTheme } = useTheme()
-  const toggleTheme = () => setTheme(theme === 'dark' ? 'light' : 'dark')
+  const { theme, resolvedTheme, setTheme } = useTheme()
 
-  const [mounted, setMounted] = useState<boolean>(false)
+  const [isMounted, setMounted] = useState<boolean>()
   useEffect(() => setMounted(true), [])
-  if (!mounted) return <Button variant="outline" size="icon" isLoading />
+  if (!isMounted) return <Button variant="outline" size="icon" isLoading />
+
+  const handleClick = () => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')
 
   return (
-    <Button variant="outline" size="icon" onClick={toggleTheme}>
+    <Button onClick={handleClick} variant="outline" size="icon">
       {theme === 'dark' ? <SunIcon /> : <MoonIcon />}
     </Button>
   )

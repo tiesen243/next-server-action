@@ -1,9 +1,8 @@
 'use server'
 
 import { unstable_cache as cache, revalidateTag } from 'next/cache'
-import { z } from 'zod'
 
-import { db } from '@/prisma'
+import { db } from '@/server/db'
 import { auth } from '@/server/auth'
 
 export const getPosts = cache(
@@ -12,52 +11,36 @@ export const getPosts = cache(
       include: { author: { select: { id: true, name: true } } },
       orderBy: { createdAt: 'desc' },
     })
+    if (!posts || posts.length < 1) throw new Error('No posts found')
+
     return posts
   },
   ['posts'],
   { tags: ['posts'] },
 )
 
-export const createPost = async (formData: FormData) => {
+export const createPost = async ({ content }: { content: string }) => {
   const { user } = await auth()
-  const schema = z.object({
-    title: z.string().min(4),
-    content: z.string().min(10),
+  if (!user) throw new Error('You must be logged in to create a post')
+
+  const post = await db.post.create({
+    data: { content, author: { connect: { id: user.id } } },
   })
+  if (!post) throw new Error('Post not created')
 
-  try {
-    if (!user) throw new Error('You must be logged in to create a post')
+  revalidateTag('posts')
 
-    const { title, content } = schema.parse(Object.fromEntries(formData))
-
-    const post = await db.post.create({
-      data: { title, content, author: { connect: { id: user.id } } },
-    })
-    if (!post) throw new Error('Failed to create post')
-
-    revalidateTag('posts')
-    return { message: 'Post created successfully' }
-  } catch (e) {
-    if (e instanceof z.ZodError) return { fieldErrors: e.flatten().fieldErrors }
-    else if (e instanceof Error) return { error: e.message }
-  }
+  return post
 }
 
-export const deletePost = async (formData: FormData) => {
-  try {
-    const { user } = await auth()
-    if (!user) throw new Error('You must be logged in to delete a post')
+export const deletePost = async ({ id }: { id: string }) => {
+  const { user } = await auth()
+  if (!user) throw new Error('You must be logged in to create a post')
 
-    const post = await db.post.findUnique({ where: { id: String(formData.get('id')) } })
-    if (!post) throw new Error('Post not found')
-    if (post.authorId !== user.id) throw new Error('You do not have permission to delete this post')
+  const deletedPost = await db.post.delete({ where: { id } })
+  if (!deletedPost) throw new Error('Post delete fail')
 
-    await db.post.delete({ where: { id: String(formData.get('id')) } })
+  revalidateTag('posts')
 
-    revalidateTag('posts')
-
-    return { success: true }
-  } catch (e) {
-    if (e instanceof Error) return { error: e.message, success: false }
-  }
+  return deletedPost
 }

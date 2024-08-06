@@ -1,23 +1,27 @@
 import type { Metadata, Viewport } from 'next'
 
-import { env } from '@/env'
-
 export type SiteConfig = {
   meta: Metadata
   viewport: Viewport
 }
 
-export const baseUrl =
-  env.NODE_ENV === 'production' && env.APP_URL ? `https://${env.APP_URL}` : 'http://localhost:3000'
+export const getBaseUrl = () => {
+  if (typeof window !== 'undefined') return window.location.origin
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL)
+    return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
+  return `http://localhost:${process.env.PORT ?? 3000}`
+}
 
 export const siteConfig: SiteConfig = {
   meta: {
-    metadataBase: new URL(baseUrl),
+    metadataBase: new URL(getBaseUrl()),
+    icons: { icon: '/favicon.ico' },
     title: 'Next.js Server Action',
     applicationName: 'Next.js Server Action',
     description: 'Next.js Server Action Starter Template with TypeScript, Tailwind CSS',
-    openGraph: { images: ['/og'] },
-    icons: [{ rel: 'icon', url: '/favicon.ico' }],
+    openGraph: { images: '/og', url: getBaseUrl() },
+    alternates: { canonical: getBaseUrl() },
   },
   viewport: {
     themeColor: [
