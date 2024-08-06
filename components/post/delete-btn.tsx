@@ -11,9 +11,7 @@ export const DeleteBtn: React.FC<{ id: string; uid: string }> = ({ id, uid }) =>
   if (!isAuth) return null
   if (user.id !== uid) return null
 
-  const handleClick = async () => {
-    await deletePost({ id })
-  }
+  const handleClick = async () => deletePost({ id })
 
   return (
     <Button
