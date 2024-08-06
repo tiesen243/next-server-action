@@ -1,16 +1,20 @@
 'use client'
 
 import { zodResolver } from '@hookform/resolvers/zod'
+import { SendHorizonalIcon } from 'lucide-react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 
+import { Button } from '@/components/ui/button'
 import { Form, FormField } from '@/components/ui/form'
-import { Button } from '../ui/button'
-import { SendHorizonalIcon } from 'lucide-react'
+import { useSession } from '@/lib/session'
 import { createPost } from '@/server/actions/post'
 
 export const CreatePost: React.FC = () => {
+  const { isAuth } = useSession()
   const form = useForm<FormValues>({ resolver })
+
+  if (!isAuth) return null
 
   const handleSubmit = form.handleSubmit(async (values) => {
     await createPost(values)
