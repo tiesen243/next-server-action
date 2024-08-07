@@ -1,11 +1,11 @@
 'use server'
 
 import { Scrypt } from 'lucia'
+import { cookies } from 'next/headers'
 
+import { auth } from '@/server/auth'
 import { lucia } from '@/server/auth/lucia'
 import { db } from '@/server/db'
-import { cookies } from 'next/headers'
-import { auth } from '../auth'
 
 interface SignUpArgs {
   name: string
